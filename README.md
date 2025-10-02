@@ -1,2 +1,2 @@
-# Nutritio
-Compteur de micronutriments - analyseur statistique
+# MNA_project
+Compteur de micronutriments
