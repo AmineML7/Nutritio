@@ -23,18 +23,72 @@ except FileNotFoundError:
 
 # Mapping des nutriments entre les noms de colonnes et les recommandations
 NUTRIENT_MAPPING = {
+    # Vitamines
     'vitamine_C': 'Vitamine C',
     'vitamine_D': 'Vitamine D',
     'vitamine_E': 'Vitamine E',
     'vitamine_B1': 'Vitamine B1',
     'vitamine_B2': 'Vitamine B2',
+    'vitamine_B3': 'Vitamine B3',
+    'vitamine_B5': 'Vitamine B5',
+    'vitamine_B6': 'Vitamine B6',
     'vitamine_B9': 'Folates',
     'vitamine_B12': 'Vitamine B12',
+    
+    # Minéraux
     'calcium': 'Calcium',
+    'cuivre': 'Cuivre',
     'fer': 'Fer',
+    'iode': 'Iode',
     'magnesium': 'Magnésium',
+    'manganese': 'Manganèse',
+    'phosphore': 'Phosphore',
     'potassium': 'Potassium',
+    'selenium': 'Sélénium',
+    'sodium': 'Sodium',
     'zinc': 'Zinc'
+}
+
+# Nutriments affichés mais sans recommandations (informatifs)
+NUTRIENT_INFO_ONLY = {
+    'retinol': 'Rétinol (Vitamine A)',
+    'beta_carotene': 'Bêta-Carotène',
+    'vitamine_K1': 'Vitamine K1',
+    'vitamine_K2': 'Vitamine K2'
+}
+
+# Unités des nutriments
+NUTRIENT_UNITS = {
+    # Vitamines en µg
+    'retinol': 'µg',
+    'beta_carotene': 'µg',
+    'vitamine_D': 'µg',
+    'vitamine_K1': 'µg',
+    'vitamine_K2': 'µg',
+    'vitamine_B9': 'µg',
+    'vitamine_B12': 'µg',
+    'iode': 'µg',
+    'selenium': 'µg',
+    
+    # Vitamines en mg
+    'vitamine_E': 'mg',
+    'vitamine_C': 'mg',
+    'vitamine_B1': 'mg',
+    'vitamine_B2': 'mg',
+    'vitamine_B3': 'mg',
+    'vitamine_B5': 'mg',
+    'vitamine_B6': 'mg',
+    
+    # Minéraux en mg
+    'calcium': 'mg',
+    'cuivre': 'mg',
+    'fer': 'mg',
+    'magnesium': 'mg',
+    'manganese': 'mg',
+    'phosphore': 'mg',
+    'potassium': 'mg',
+    'sodium': 'mg',
+    'zinc': 'mg'
 }
 
 @app.route('/')
@@ -102,30 +156,50 @@ def calculate_nutrients():
     
     # Calculer les nutriments pour la quantité
     nutriments = {}
+    nutriments_info = {}
     recommandations = {}
     pourcentages = {}
     
+    # Nutriments avec recommandations
     for col_name, reco_name in NUTRIENT_MAPPING.items():
         value = aliment_row.get(col_name)
         
         if pd.notna(value):
             # Calculer la valeur pour la quantité donnée (les valeurs sont pour 100g)
             calculated_value = float(value) * (quantity / 100)
-            nutriments[reco_name] = round(calculated_value, 2)
             
-            # Récupérer la recommandation
-            reco_row = recommandations_df[recommandations_df['Nutriment'] == reco_name]
-            if not reco_row.empty:
-                reco_value = float(reco_row.iloc[0][gender])
-                recommandations[reco_name] = reco_value
+            # Gérer le cas du potassium et sodium (en grammes dans les recommandations)
+            if col_name == 'potassium' or col_name == 'sodium':
+                nutriments[reco_name] = round(calculated_value, 2)
+                reco_row = recommandations_df[recommandations_df['Nutriment'] == reco_name]
+                if not reco_row.empty:
+                    reco_value_g = float(reco_row.iloc[0][gender]) * 1000  # Convertir g en mg
+                    recommandations[reco_name] = reco_value_g
+                    percentage = (calculated_value / reco_value_g) * 100
+                    pourcentages[reco_name] = round(percentage, 1)
+            else:
+                nutriments[reco_name] = round(calculated_value, 2)
                 
-                # Calculer le pourcentage
-                percentage = (calculated_value / reco_value) * 100
-                pourcentages[reco_name] = round(percentage, 1)
+                # Récupérer la recommandation
+                reco_row = recommandations_df[recommandations_df['Nutriment'] == reco_name]
+                if not reco_row.empty:
+                    reco_value = float(reco_row.iloc[0][gender])
+                    recommandations[reco_name] = reco_value
+                    
+                    # Calculer le pourcentage
+                    percentage = (calculated_value / reco_value) * 100
+                    pourcentages[reco_name] = round(percentage, 1)
+    
+    # Nutriments informatifs (sans recommandations)
+    for col_name, display_name in NUTRIENT_INFO_ONLY.items():
+        value = aliment_row.get(col_name)
+        if pd.notna(value):
+            calculated_value = float(value) * (quantity / 100)
+            nutriments_info[display_name] = round(calculated_value, 2)
     
     # Ajouter les macronutriments
     macros = {}
-    for macro in ['energie_kcal', 'proteines', 'glucides', 'lipides', 'fibres']:
+    for macro in ['energie_kcal', 'proteines', 'glucides', 'lipides', 'fibres', 'sucres', 'eau']:
         value = aliment_row.get(macro)
         if pd.notna(value):
             macros[macro] = round(float(value) * (quantity / 100), 2)
@@ -139,8 +213,10 @@ def calculate_nutrients():
         'quantity': quantity,
         'macros': macros,
         'micronutriments': nutriments,
+        'nutriments_info': nutriments_info,
         'recommandations': recommandations,
-        'pourcentages': pourcentages
+        'pourcentages': pourcentages,
+        'units': NUTRIENT_UNITS
     })
 
 @app.route('/api/recommandations', methods=['GET'])

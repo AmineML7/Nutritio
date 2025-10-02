@@ -304,10 +304,30 @@ section h2 {
     gap: 12px;
 }
 
+.info-separator {
+    margin: 20px 0 10px 0;
+    padding: 10px;
+    background: var(--background);
+    border-radius: 6px;
+}
+
+.info-separator h4 {
+    color: var(--text-secondary);
+    font-size: 14px;
+    font-weight: 600;
+    margin: 0;
+}
+
 .micro-item {
     border: 2px solid var(--border-color);
     border-radius: 8px;
     padding: 15px;
+}
+
+.micro-item.info-only {
+    background: var(--background);
+    border-style: dashed;
+    opacity: 0.9;
 }
 
 .micro-header {
