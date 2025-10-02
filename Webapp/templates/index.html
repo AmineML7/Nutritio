@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nutritio - Compteur de Micronutriments</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="logo">
+                <span class="logo-icon">🥗</span>
+                <h1>Nutritio</h1>
+            </div>
+            <p class="tagline">Suivez vos micronutriments personnalisés</p>
+        </header>
+
+        <!-- Profil utilisateur -->
+        <section class="profile-section">
+            <h2>👤 Mon Profil</h2>
+            <div class="profile-settings">
+                <label for="gender">Sexe :</label>
+                <div class="gender-selector">
+                    <button class="gender-btn active" data-gender="Homme">
+                        👨 Homme
+                    </button>
+                    <button class="gender-btn" data-gender="Femme">
+                        👩 Femme
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Recherche d'aliment -->
+        <section class="search-section">
+            <h2>🔍 Rechercher un aliment</h2>
+            <div class="search-container">
+                <input 
+                    type="text" 
+                    id="search-input" 
+                    placeholder="Tapez le nom d'un aliment (ex: pomme, poulet, riz...)"
+                    autocomplete="off"
+                >
+                <div id="search-results" class="search-results"></div>
+            </div>
+        </section>
+
+        <!-- Aliment sélectionné -->
+        <section class="selected-aliment" id="selected-aliment" style="display: none;">
+            <h2>📊 Aliment sélectionné</h2>
+            <div class="aliment-card">
+                <div class="aliment-header">
+                    <h3 id="aliment-name"></h3>
+                    <span class="aliment-category" id="aliment-category"></span>
+                </div>
+                
+                <div class="quantity-selector">
+                    <label for="quantity">Quantité :</label>
+                    <input type="number" id="quantity" value="100" min="1" max="10000">
+                    <span>grammes</span>
+                </div>
+
+                <button id="calculate-btn" class="btn-primary">
+                    Calculer les nutriments
+                </button>
+            </div>
+        </section>
+
+        <!-- Résultats -->
+        <section class="results-section" id="results-section" style="display: none;">
+            <h2>📈 Résultats nutritionnels</h2>
+            
+            <!-- Macronutriments -->
+            <div class="macros-card">
+                <h3>Macronutriments</h3>
+                <div id="macros-grid" class="macros-grid"></div>
+            </div>
+
+            <!-- Micronutriments -->
+            <div class="micros-card">
+                <h3>Micronutriments (% des besoins quotidiens)</h3>
+                <div id="micros-list" class="micros-list"></div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>Données nutritionnelles : Table CIQUAL 2020 - ANSES</p>
+            <p>Recommandations : ANSES - Références nutritionnelles</p>
+        </footer>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html>
+
