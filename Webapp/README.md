@@ -4,7 +4,9 @@ Application web moderne pour suivre vos apports en micronutriments par rapport �
 
 ## 🎯 Fonctionnalités
 
-- **Recherche d'aliments** : Base de données complète de 3000+ aliments (Table CIQUAL 2020)
+- **Recherche d'aliments** : Base de données complète de 3185 aliments (Table CIQUAL 2020)
+- **Liste d'aliments** : Ajoutez plusieurs aliments et consultez les totaux cumulés
+- **24 micronutriments** : Suivi complet des vitamines et minéraux
 - **Profil personnalisé** : Recommandations nutritionnelles adaptées (Homme/Femme)
 - **Calcul automatique** : Nutriments calculés pour n'importe quelle quantité
 - **Visualisation claire** : Barres de progression et pourcentages des besoins quotidiens
@@ -55,9 +57,18 @@ Ouvrez votre navigateur et allez à : `http://localhost:5000`
 
 4. **Ajustez la quantité** : Modifiez la quantité en grammes (défaut: 100g)
 
-5. **Consultez les résultats** :
-   - **Macronutriments** : Énergie, protéines, glucides, lipides, fibres
-   - **Micronutriments** : Vitamines et minéraux avec pourcentage des besoins quotidiens
+5. **Ajoutez à votre liste** : Cliquez sur "➕ Ajouter à ma liste"
+
+6. **Répétez** pour ajouter d'autres aliments
+
+7. **Consultez les totaux cumulés** :
+   - **Macronutriments** : Énergie, protéines, glucides, lipides, fibres, sucres, eau
+   - **21 Micronutriments** : Vitamines et minéraux avec pourcentage des besoins quotidiens
+   - **3 Nutriments informatifs** : Rétinol, Bêta-Carotène, Vitamine K1
+
+8. **Gérez votre liste** :
+   - Retirez un aliment avec 🗑️
+   - Videz toute la liste avec "Vider la liste"
 
 ## 📁 Structure du projet
 

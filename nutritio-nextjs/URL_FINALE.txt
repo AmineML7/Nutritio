@@ -1,0 +1,41 @@
+╔═══════════════════════════════════════════════════════════════╗
+║                                                               ║
+║           🥗 NUTRITIO - APPLICATION MODERNE 🥗               ║
+║                                                               ║
+╚═══════════════════════════════════════════════════════════════╝
+
+🌐 OUVRIR DANS VOTRE NAVIGATEUR :
+
+      ➡️   http://localhost:3005   ⬅️
+
+✅ Le serveur utilise maintenant Webpack (plus compatible avec Tailwind)
+✅ Tailwind CSS v3.4.17 installé
+✅ Configuration correcte
+
+🎨 VOUS DEVRIEZ MAINTENANT VOIR :
+
+  ✨ Header avec dégradé VERT/TEAL
+  ✨ Cartes blanches avec ombres
+  ✨ Boutons colorés (bleu pour Homme, rose pour Femme)
+  ✨ Input de recherche stylisé
+  ✨ Footer en gris
+  ✨ Design moderne et responsive
+
+🔧 Si la page est toujours vide:
+
+  1. Rafraîchir la page (Ctrl+F5 ou Cmd+Shift+R)
+  2. Vider le cache du navigateur
+  3. Ouvrir la console (F12) pour voir les erreurs
+
+📝 Note: Le port change car d'autres instances tournent.
+    Pour libérer le port 3000:
+    
+    pkill -f "flask run"
+    pkill -f "python.*app.py"
+    pkill -f "next dev"
+    
+    Puis relancer: npm run dev
+
+---
+Créé avec ❤️ - Next.js 15 + Tailwind CSS 3 + TypeScript
+

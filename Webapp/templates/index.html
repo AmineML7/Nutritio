@@ -63,9 +63,20 @@
                 </div>
 
                 <button id="calculate-btn" class="btn-primary">
-                    Calculer les nutriments
+                    ➕ Ajouter à ma liste
                 </button>
             </div>
+        </section>
+
+        <!-- Liste des aliments -->
+        <section class="list-section" id="list-section" style="display: none;">
+            <div class="list-header">
+                <h2>📋 Ma liste d'aliments</h2>
+                <button class="btn-clear" onclick="clearList()">
+                    🗑️ Vider la liste
+                </button>
+            </div>
+            <div id="aliments-list" class="aliments-list"></div>
         </section>
 
         <!-- Résultats -->

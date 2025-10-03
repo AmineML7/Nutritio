@@ -2,6 +2,7 @@
 let currentGender = 'Homme';
 let selectedAliment = null;
 let searchTimeout = null;
+let alimentsList = []; // Liste des aliments ajoutés
 
 // Éléments DOM
 const searchInput = document.getElementById('search-input');
@@ -25,9 +26,9 @@ function initEventListeners() {
             btn.classList.add('active');
             currentGender = btn.dataset.gender;
             
-            // Recalculer si un aliment est sélectionné
-            if (selectedAliment) {
-                calculateNutrients();
+            // Recalculer les totaux si il y a des aliments
+            if (alimentsList.length > 0) {
+                calculateTotals();
             }
         });
     });
@@ -54,15 +55,11 @@ function initEventListeners() {
         }
     });
 
-    // Calcul des nutriments
-    calculateBtn.addEventListener('click', calculateNutrients);
+    // Calcul des nutriments (ajout à la liste)
+    calculateBtn.addEventListener('click', addToList);
 
-    // Recalculer quand la quantité change
-    quantityInput.addEventListener('input', () => {
-        if (selectedAliment) {
-            calculateNutrients();
-        }
-    });
+    // Plus de recalcul automatique, on ajoute à la liste
+    // L'utilisateur clique sur "Ajouter à ma liste"
 }
 
 async function searchAliments(query) {
@@ -133,7 +130,7 @@ async function selectAliment(code, name) {
     }
 }
 
-async function calculateNutrients() {
+async function addToList() {
     if (!selectedAliment) return;
 
     const quantity = parseFloat(quantityInput.value);
@@ -156,10 +153,137 @@ async function calculateNutrients() {
         });
 
         const results = await response.json();
-        displayResults(results);
+        
+        // Ajouter à la liste
+        alimentsList.push({
+            id: Date.now(), // ID unique
+            aliment: results.aliment,
+            quantity: quantity,
+            macros: results.macros,
+            micronutriments: results.micronutriments,
+            nutriments_info: results.nutriments_info
+        });
+        
+        // Réinitialiser la sélection
+        selectedAlimentSection.style.display = 'none';
+        searchInput.value = '';
+        selectedAliment = null;
+        
+        // Mettre à jour l'affichage
+        updateListDisplay();
+        calculateTotals();
         
     } catch (error) {
-        console.error('Erreur lors du calcul:', error);
+        console.error('Erreur lors de l\'ajout:', error);
+    }
+}
+
+function removeFromList(id) {
+    alimentsList = alimentsList.filter(item => item.id !== id);
+    updateListDisplay();
+    calculateTotals();
+}
+
+function clearList() {
+    if (confirm('Voulez-vous vraiment vider votre liste ?')) {
+        alimentsList = [];
+        updateListDisplay();
+        resultsSection.style.display = 'none';
+    }
+}
+
+function updateListDisplay() {
+    const listContainer = document.getElementById('aliments-list');
+    const listSection = document.getElementById('list-section');
+    
+    if (alimentsList.length === 0) {
+        listSection.style.display = 'none';
+        return;
+    }
+    
+    listSection.style.display = 'block';
+    
+    listContainer.innerHTML = alimentsList.map(item => `
+        <div class="list-item">
+            <div class="list-item-header">
+                <div class="list-item-info">
+                    <span class="list-item-name">${item.aliment.nom}</span>
+                    <span class="list-item-quantity">${item.quantity}g</span>
+                </div>
+                <button class="btn-remove" onclick="removeFromList(${item.id})" title="Retirer">
+                    🗑️
+                </button>
+            </div>
+            <div class="list-item-macros">
+                <span>${Math.round((item.macros.energie_kcal || 0) * 10) / 10} kcal</span>
+                <span>P: ${Math.round((item.macros.proteines || 0) * 10) / 10}g</span>
+                <span>G: ${Math.round((item.macros.glucides || 0) * 10) / 10}g</span>
+                <span>L: ${Math.round((item.macros.lipides || 0) * 10) / 10}g</span>
+            </div>
+        </div>
+    `).join('');
+}
+
+async function calculateTotals() {
+    if (alimentsList.length === 0) {
+        resultsSection.style.display = 'none';
+        return;
+    }
+    
+    // Calculer les totaux de macros
+    const totalMacros = {};
+    const totalMicros = {};
+    const totalNutrimentsInfo = {};
+    
+    alimentsList.forEach(item => {
+        // Macros
+        Object.keys(item.macros).forEach(key => {
+            totalMacros[key] = (totalMacros[key] || 0) + item.macros[key];
+        });
+        
+        // Micros
+        Object.keys(item.micronutriments).forEach(key => {
+            totalMicros[key] = (totalMicros[key] || 0) + item.micronutriments[key];
+        });
+        
+        // Info
+        if (item.nutriments_info) {
+            Object.keys(item.nutriments_info).forEach(key => {
+                totalNutrimentsInfo[key] = (totalNutrimentsInfo[key] || 0) + item.nutriments_info[key];
+            });
+        }
+    });
+    
+    // Récupérer les recommandations
+    try {
+        const response = await fetch(`/api/recommandations?gender=${currentGender}`);
+        const recommandations = await response.json();
+        
+        // Calculer les pourcentages
+        const pourcentages = {};
+        const recoValues = {};
+        
+        recommandations.forEach(reco => {
+            const nutrient = reco.nutriment;
+            if (totalMicros[nutrient] !== undefined) {
+                recoValues[nutrient] = reco.valeur;
+                pourcentages[nutrient] = ((totalMicros[nutrient] / reco.valeur) * 100).toFixed(1);
+            }
+        });
+        
+        // Afficher les résultats
+        displayResults({
+            aliment: { nom: `Total (${alimentsList.length} aliment${alimentsList.length > 1 ? 's' : ''})` },
+            quantity: 'cumul',
+            macros: totalMacros,
+            micronutriments: totalMicros,
+            nutriments_info: totalNutrimentsInfo,
+            recommandations: recoValues,
+            pourcentages: pourcentages
+        });
+        
+    } catch (error) {
+        console.error('Erreur lors du calcul des totaux:', error);
     }
 }
 
@@ -184,7 +308,7 @@ function displayResults(results) {
         
         return `
             <div class="macro-item" style="background: ${macro.color}">
-                <span class="macro-value">${macros[key]}</span>
+                <span class="macro-value">${Math.round(macros[key] * 10) / 10}</span>
                 <span class="macro-name">${macro.name} (${macro.unit})</span>
             </div>
         `;
@@ -224,7 +348,7 @@ function displayResults(results) {
             <div class="micro-item">
                 <div class="micro-header">
                     <span class="micro-name">✓ ${nutrient}</span>
-                    <span class="micro-values">${value} ${unit} / ${reco} ${unit}</span>
+                    <span class="micro-values">${Math.round(value * 10) / 10} ${unit} / ${Math.round(reco * 10) / 10} ${unit}</span>
                 </div>
                 <div class="micro-bar">
                     <div class="micro-bar-fill ${barClass}" style="width: ${Math.min(percentage, 100)}%">
@@ -251,7 +375,7 @@ function displayResults(results) {
                 <div class="micro-item info-only">
                     <div class="micro-header">
                         <span class="micro-name">📋 ${nutrient}</span>
-                        <span class="micro-values">${value} ${unit}</span>
+                        <span class="micro-values">${Math.round(value * 10) / 10} ${unit}</span>
                     </div>
                 </div>
             `;

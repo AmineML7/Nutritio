@@ -259,6 +259,126 @@ section h2 {
     box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);
 }
 
+/* Liste des aliments */
+.list-section {
+    background: var(--card-bg);
+    border-radius: 12px;
+    padding: 25px;
+    margin-bottom: 25px;
+    box-shadow: var(--shadow);
+}
+
+.list-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.list-header h2 {
+    margin: 0;
+    font-size: 24px;
+    color: var(--text-primary);
+}
+
+.btn-clear {
+    padding: 10px 20px;
+    background: #e74c3c;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-clear:hover {
+    background: #c0392b;
+    transform: translateY(-2px);
+}
+
+.aliments-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.list-item {
+    background: var(--background);
+    border: 2px solid var(--border-color);
+    border-radius: 8px;
+    padding: 15px;
+    transition: all 0.3s ease;
+}
+
+.list-item:hover {
+    border-color: var(--primary-color);
+    box-shadow: 0 2px 8px rgba(76, 175, 80, 0.1);
+}
+
+.list-item-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.list-item-info {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.list-item-name {
+    font-weight: 600;
+    color: var(--text-primary);
+    font-size: 16px;
+}
+
+.list-item-quantity {
+    color: var(--secondary-color);
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.btn-remove {
+    background: transparent;
+    border: 2px solid #e74c3c;
+    color: #e74c3c;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 18px;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-remove:hover {
+    background: #e74c3c;
+    color: white;
+    transform: scale(1.1);
+}
+
+.list-item-macros {
+    display: flex;
+    gap: 15px;
+    font-size: 14px;
+    color: var(--text-secondary);
+    padding-top: 10px;
+    border-top: 1px solid var(--border-color);
+}
+
+.list-item-macros span {
+    background: white;
+    padding: 4px 10px;
+    border-radius: 4px;
+    font-weight: 600;
+}
+
 /* Macronutriments */
 .macros-card, .micros-card {
     margin-bottom: 25px;

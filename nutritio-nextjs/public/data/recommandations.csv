@@ -1,0 +1,27 @@
+Nutriment,Unité,Homme,Femme
+Vitamine A,μg/j,750.0,650.0
+Vitamine B1,mg/j,1.6,1.6
+Vitamine B2,mg/j,1.6,1.6
+Vitamine B3,mg/j,1.6,1.6
+Vitamine B5,mg/j,6.0,5.0
+Vitamine B6,mg/j,1.7,1.6
+Vitamine B8,μg/j,40.0,40.0
+Vitamine B12,μg/j,4.0,4.0
+Vitamine C,mg/j,110.0,110.0
+Vitamine D,μg/j,15.0,15.0
+Vitamine E,mg/j,13.0,11.0
+Vitamine K,μg/j,70.0,70.0
+Folates,μg/j,330.0,330.0
+Choline,mg/j,400.0,400.0
+Calcium,mg/j,950.0,950.0
+Cuivre,mg/j,1.6,1.3
+Fer,mg/j,11.0,16.0
+Iode,μg/j,150.0,150.0
+Magnésium,mg/j,420.0,360.0
+Manganèse,mg/j,3.0,3.0
+Phosphore,mg/j,700.0,700.0
+Potassium,g/j,3.5,3.5
+Sélénium,μg/j,70.0,70.0
+Sodium,g/j,1.5,1.5
+Zinc,mg/j,11.0,8.0
+Molybdène,μg/j,95.0,95.0
