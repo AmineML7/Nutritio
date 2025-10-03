@@ -64,7 +64,7 @@ export default function NutrientsResults({
   return (
     <div className="space-y-6">
       {/* Macronutriments */}
-      <div className="bg-white border border-emerald-100/50 rounded-lg p-6 hover:border-emerald-200 transition-colors">
+      <div className="bg-white/80 backdrop-blur-sm border border-emerald-200 rounded-lg p-6 hover:border-emerald-300 hover:shadow-sm transition-all">
         <h3 className="text-sm font-medium text-emerald-900 mb-4">Macronutriments</h3>
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
           {Object.entries(macros).map(([key, value]) => {
@@ -89,7 +89,7 @@ export default function NutrientsResults({
       </div>
 
       {/* Micronutriments */}
-      <div className="bg-white border border-emerald-100/50 rounded-lg p-6 hover:border-emerald-200 transition-colors">
+      <div className="bg-white/80 backdrop-blur-sm border border-emerald-200 rounded-lg p-6 hover:border-emerald-300 hover:shadow-sm transition-all">
         <h3 className="text-sm font-medium text-emerald-900 mb-4">
           Micronutriments <span className="text-gray-400 font-normal">(% besoins quotidiens)</span>
         </h3>

@@ -129,7 +129,7 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-white via-emerald-50/20 to-white">
+    <div className="min-h-screen bg-gradient-to-br from-emerald-50/40 via-white to-emerald-50/60">
       <Header />
       
       <main className="max-w-7xl mx-auto px-6 py-8">
@@ -172,7 +172,7 @@ export default function Home() {
       </main>
 
       {/* Footer minimaliste */}
-      <footer className="border-t border-emerald-100 mt-16 py-8 bg-gradient-to-b from-white to-emerald-50/20">
+      <footer className="border-t border-emerald-200 mt-16 py-8 bg-gradient-to-b from-white to-emerald-50/60">
         <div className="max-w-7xl mx-auto px-6 text-center text-sm text-gray-500">
           <p>Données nutritionnelles <span className="text-emerald-600 font-medium">CIQUAL 2020</span> — ANSES</p>
         </div>

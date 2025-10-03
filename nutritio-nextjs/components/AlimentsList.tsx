@@ -12,7 +12,7 @@ export default function AlimentsList({ aliments, onRemove, onClear }: AlimentsLi
   if (aliments.length === 0) return null;
 
   return (
-    <div className="bg-white border border-emerald-100/50 rounded-lg p-6 hover:border-emerald-200 transition-colors">
+    <div className="bg-white/80 backdrop-blur-sm border border-emerald-200 rounded-lg p-6 hover:border-emerald-300 hover:shadow-sm transition-all">
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-sm font-medium text-emerald-900">
           Ma liste <span className="text-emerald-600/60">({aliments.length})</span>

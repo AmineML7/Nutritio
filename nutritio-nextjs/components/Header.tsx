@@ -2,7 +2,7 @@
 
 export default function Header() {
   return (
-    <header className="border-b border-emerald-100 bg-gradient-to-r from-white via-emerald-50/30 to-white">
+    <header className="border-b border-emerald-200 bg-gradient-to-r from-emerald-50/50 via-white to-emerald-50/50 backdrop-blur-sm">
       <div className="max-w-7xl mx-auto px-6 py-8">
         <div className="flex items-center justify-between">
           <div>
