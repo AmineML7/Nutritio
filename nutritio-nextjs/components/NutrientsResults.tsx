@@ -47,6 +47,20 @@ export default function NutrientsResults({
     return 'mg';
   };
 
+  const formatNutrientValue = (nutrient: string, value: number): { value: string; unit: string } => {
+    // Pour Potassium et Sodium, afficher en grammes si >= 1g
+    if (nutrient === 'Potassium' || nutrient === 'Sodium') {
+      if (value >= 1000) {
+        return { value: (value / 1000).toFixed(2), unit: 'g' };
+      } else {
+        return { value: Math.round(value * 10) / 10 + '', unit: 'mg' };
+      }
+    }
+    
+    const unit = getUnit(nutrient);
+    return { value: Math.round(value * 10) / 10 + '', unit };
+  };
+
   return (
     <div className="space-y-6">
       {/* Macronutriments */}
@@ -84,7 +98,7 @@ export default function NutrientsResults({
             .sort(([a], [b]) => a.localeCompare(b))
             .map(([nutrient, value]) => {
               const percentage = pourcentages[nutrient] || 0;
-              const unit = getUnit(nutrient);
+              const formatted = formatNutrientValue(nutrient, value);
 
               return (
                 <div key={nutrient} className="group">
@@ -93,7 +107,7 @@ export default function NutrientsResults({
                     <div className="flex items-baseline gap-2">
                       <span className="text-sm font-medium text-gray-900">{percentage}%</span>
                       <span className="text-xs text-gray-400">
-                        {Math.round(value * 10) / 10} {unit}
+                        {formatted.value} {formatted.unit}
                       </span>
                     </div>
                   </div>

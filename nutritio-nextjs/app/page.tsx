@@ -105,8 +105,14 @@ export default function Home() {
       recommandations.forEach((reco: any) => {
         const nutrient = reco.nutriment;
         if (totalMicros[nutrient] !== undefined) {
+          // Pour Potassium et Sodium, la recommandation est en grammes, il faut convertir en mg
+          let recoValue = reco.valeur;
+          if (nutrient === 'Potassium' || nutrient === 'Sodium') {
+            recoValue = reco.valeur * 1000; // Convertir g → mg
+          }
+          
           pourcentages[nutrient] = parseFloat(
-            ((totalMicros[nutrient] / reco.valeur) * 100).toFixed(1)
+            ((totalMicros[nutrient] / recoValue) * 100).toFixed(1)
           );
         }
       });
@@ -142,16 +148,16 @@ export default function Home() {
                 onCancel={() => setSelectedAliment(null)}
               />
             )}
-          </aside>
 
-          {/* Colonne droite - Résultats */}
-          <div className="lg:col-span-8 space-y-6">
             <AlimentsList
               aliments={alimentsList}
               onRemove={handleRemoveAliment}
               onClear={handleClearList}
             />
+          </aside>
 
+          {/* Colonne droite - Résultats */}
+          <div className="lg:col-span-8 space-y-6">
             {totals && (
               <NutrientsResults
                 macros={totals.macros}
