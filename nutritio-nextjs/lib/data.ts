@@ -161,7 +161,8 @@ export function searchAliments(query: string): Aliment[] {
     return aLower.localeCompare(bLower);
   });
   
-  return results.slice(0, 20);
+  // Ne plus limiter ici, on gère la pagination côté client
+  return results;
 }
 
 export function getAliment(code: number): Aliment | undefined {
