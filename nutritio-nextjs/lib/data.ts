@@ -133,9 +133,35 @@ export function searchAliments(query: string): Aliment[] {
   const aliments = loadAliments();
   const lowerQuery = query.toLowerCase();
   
-  return aliments
-    .filter(aliment => aliment.nom.toLowerCase().includes(lowerQuery))
-    .slice(0, 20);
+  // Filtrer les aliments correspondants
+  const results = aliments.filter(aliment => 
+    aliment.nom.toLowerCase().includes(lowerQuery)
+  );
+  
+  // Trier par pertinence :
+  // 1. Les aliments dont le nom COMMENCE par la requête
+  // 2. Les aliments avec moins de mots (plus simples)
+  // 3. Ordre alphabétique
+  results.sort((a, b) => {
+    const aLower = a.nom.toLowerCase();
+    const bLower = b.nom.toLowerCase();
+    
+    // Priorité 1 : Nom qui commence par la requête
+    const aStarts = aLower.startsWith(lowerQuery);
+    const bStarts = bLower.startsWith(lowerQuery);
+    if (aStarts && !bStarts) return -1;
+    if (!aStarts && bStarts) return 1;
+    
+    // Priorité 2 : Nom court (aliments simples)
+    const aWords = a.nom.split(' ').length;
+    const bWords = b.nom.split(' ').length;
+    if (aWords !== bWords) return aWords - bWords;
+    
+    // Priorité 3 : Ordre alphabétique
+    return aLower.localeCompare(bLower);
+  });
+  
+  return results.slice(0, 20);
 }
 
 export function getAliment(code: number): Aliment | undefined {

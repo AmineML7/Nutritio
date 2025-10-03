@@ -34,3 +34,5 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+USDA_API_KEY=vAtINa40I4HcNQPHEKboNlA8J9Tax5aU5jPINcej
+.env.local
