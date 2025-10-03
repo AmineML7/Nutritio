@@ -74,9 +74,9 @@ export default function SearchBar({ onSelectAliment }: SearchBarProps) {
   };
 
   return (
-    <div className="bg-white/80 backdrop-blur-sm border border-emerald-200 rounded-lg p-6 hover:border-emerald-300 hover:shadow-sm transition-all">
+    <div className="bg-white/80 backdrop-blur-sm border border-emerald-200 rounded-lg p-6 hover:border-emerald-300 hover:shadow-sm transition-all relative z-50">
       <h2 className="text-sm font-medium text-emerald-900 mb-4">Rechercher un aliment</h2>
-      <div ref={searchRef} className="relative">
+      <div ref={searchRef} className="relative z-[100]">
         <input
           type="text"
           value={query}
@@ -92,7 +92,7 @@ export default function SearchBar({ onSelectAliment }: SearchBarProps) {
         )}
 
         {showResults && allResults.length > 0 && (
-          <div className="absolute top-full left-0 right-0 mt-2 bg-white border border-gray-100 rounded-lg shadow-lg max-h-96 overflow-y-auto z-50">
+          <div className="absolute top-full left-0 right-0 mt-2 bg-white border border-gray-200 rounded-lg shadow-2xl max-h-96 overflow-y-auto z-[9999]">
             {/* En-tête avec total */}
             <div className="sticky top-0 bg-gray-50 px-4 py-2 border-b border-gray-200 flex justify-between items-center">
               <span className="text-xs font-medium text-gray-700">
@@ -133,7 +133,7 @@ export default function SearchBar({ onSelectAliment }: SearchBarProps) {
         )}
 
         {showResults && query.length >= 2 && results.length === 0 && !isLoading && (
-          <div className="absolute top-full left-0 right-0 mt-2 bg-white border border-gray-100 rounded-lg shadow-lg p-4 text-center text-sm text-gray-500">
+          <div className="absolute top-full left-0 right-0 mt-2 bg-white border border-gray-200 rounded-lg shadow-2xl p-4 text-center text-sm text-gray-500 z-[9999]">
             Aucun aliment trouvé
           </div>
         )}
