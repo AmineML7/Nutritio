@@ -12,10 +12,10 @@ export default function AlimentsList({ aliments, onRemove, onClear }: AlimentsLi
   if (aliments.length === 0) return null;
 
   return (
-    <div className="bg-white border border-gray-100 rounded-lg p-6">
+    <div className="bg-white border border-emerald-100/50 rounded-lg p-6 hover:border-emerald-200 transition-colors">
       <div className="flex justify-between items-center mb-4">
-        <h2 className="text-sm font-medium text-gray-900">
-          Ma liste <span className="text-gray-400">({aliments.length})</span>
+        <h2 className="text-sm font-medium text-emerald-900">
+          Ma liste <span className="text-emerald-600/60">({aliments.length})</span>
         </h2>
         <button
           onClick={onClear}
@@ -29,7 +29,7 @@ export default function AlimentsList({ aliments, onRemove, onClear }: AlimentsLi
         {aliments.map((item) => (
           <div
             key={item.id}
-            className="flex items-center justify-between p-3 bg-gray-50 rounded-md hover:bg-gray-100 transition-colors group"
+            className="flex items-center justify-between p-3 bg-gray-50 rounded-md hover:bg-emerald-50 hover:border-emerald-100 border border-transparent transition-all group"
           >
             <div className="flex-1">
               <div className="flex items-baseline gap-2">

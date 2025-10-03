@@ -64,15 +64,15 @@ export default function NutrientsResults({
   return (
     <div className="space-y-6">
       {/* Macronutriments */}
-      <div className="bg-white border border-gray-100 rounded-lg p-6">
-        <h3 className="text-sm font-medium text-gray-900 mb-4">Macronutriments</h3>
+      <div className="bg-white border border-emerald-100/50 rounded-lg p-6 hover:border-emerald-200 transition-colors">
+        <h3 className="text-sm font-medium text-emerald-900 mb-4">Macronutriments</h3>
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
           {Object.entries(macros).map(([key, value]) => {
             const config = MACRO_CONFIG[key as keyof typeof MACRO_CONFIG];
             if (!config) return null;
 
             return (
-              <div key={key} className="text-center p-4 bg-gray-50 rounded-lg">
+              <div key={key} className="text-center p-4 bg-gradient-to-br from-gray-50 to-emerald-50/30 rounded-lg hover:from-emerald-50 hover:to-emerald-100/40 transition-all border border-transparent hover:border-emerald-100">
                 <div className="text-2xl font-light text-gray-900">
                   {Math.round(value * 10) / 10}
                 </div>
@@ -89,8 +89,8 @@ export default function NutrientsResults({
       </div>
 
       {/* Micronutriments */}
-      <div className="bg-white border border-gray-100 rounded-lg p-6">
-        <h3 className="text-sm font-medium text-gray-900 mb-4">
+      <div className="bg-white border border-emerald-100/50 rounded-lg p-6 hover:border-emerald-200 transition-colors">
+        <h3 className="text-sm font-medium text-emerald-900 mb-4">
           Micronutriments <span className="text-gray-400 font-normal">(% besoins quotidiens)</span>
         </h3>
         <div className="space-y-3">
@@ -101,9 +101,9 @@ export default function NutrientsResults({
               const formatted = formatNutrientValue(nutrient, value);
 
               return (
-                <div key={nutrient} className="group">
+                <div key={nutrient} className="group hover:bg-emerald-50/30 p-2 -mx-2 rounded-md transition-colors">
                   <div className="flex justify-between items-baseline mb-1.5">
-                    <span className="text-sm text-gray-700">{nutrient}</span>
+                    <span className="text-sm text-gray-700 group-hover:text-emerald-900">{nutrient}</span>
                     <div className="flex items-baseline gap-2">
                       <span className="text-sm font-medium text-gray-900">{percentage}%</span>
                       <span className="text-xs text-gray-400">

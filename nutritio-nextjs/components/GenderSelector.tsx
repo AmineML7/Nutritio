@@ -7,8 +7,8 @@ interface GenderSelectorProps {
 
 export default function GenderSelector({ gender, onGenderChange }: GenderSelectorProps) {
   return (
-    <div className="bg-white border border-gray-100 rounded-lg p-6">
-      <h2 className="text-sm font-medium text-gray-900 mb-4">Profil</h2>
+    <div className="bg-white border border-emerald-100/50 rounded-lg p-6 hover:border-emerald-200 transition-colors">
+      <h2 className="text-sm font-medium text-emerald-900 mb-4">Profil</h2>
       <div className="grid grid-cols-2 gap-3">
         <button
           onClick={() => onGenderChange('Homme')}

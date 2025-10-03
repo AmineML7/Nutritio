@@ -19,7 +19,7 @@ export default function SelectedAliment({ aliment, onAdd, onCancel }: SelectedAl
   };
 
   return (
-    <div className="bg-emerald-50 border border-emerald-100 rounded-lg p-6">
+    <div className="bg-gradient-to-br from-emerald-50 to-white border border-emerald-200 rounded-lg p-6 shadow-sm">
       <div className="flex justify-between items-start mb-4">
         <div>
           <h3 className="text-sm font-medium text-gray-900">{aliment.nom}</h3>

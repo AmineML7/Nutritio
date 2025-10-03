@@ -74,8 +74,8 @@ export default function SearchBar({ onSelectAliment }: SearchBarProps) {
   };
 
   return (
-    <div className="bg-white border border-gray-100 rounded-lg p-6">
-      <h2 className="text-sm font-medium text-gray-900 mb-4">Rechercher un aliment</h2>
+    <div className="bg-white border border-emerald-100/50 rounded-lg p-6 hover:border-emerald-200 transition-colors">
+      <h2 className="text-sm font-medium text-emerald-900 mb-4">Rechercher un aliment</h2>
       <div ref={searchRef} className="relative">
         <input
           type="text"

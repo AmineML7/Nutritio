@@ -2,19 +2,19 @@
 
 export default function Header() {
   return (
-    <header className="border-b border-gray-100 bg-white">
+    <header className="border-b border-emerald-100 bg-gradient-to-r from-white via-emerald-50/30 to-white">
       <div className="max-w-7xl mx-auto px-6 py-8">
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-3xl font-light tracking-wide text-gray-900">
               Nutritio
             </h1>
-            <p className="text-sm text-gray-500 mt-1">
+            <p className="text-sm text-emerald-600 mt-1 font-medium">
               Suivi des micronutriments
             </p>
           </div>
           
-          <div className="h-12 w-12 rounded-full bg-emerald-50 flex items-center justify-center">
+          <div className="h-12 w-12 rounded-full bg-gradient-to-br from-emerald-50 to-emerald-100 flex items-center justify-center shadow-sm">
             <svg className="w-6 h-6 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
