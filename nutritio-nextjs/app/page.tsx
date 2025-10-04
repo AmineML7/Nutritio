@@ -7,6 +7,8 @@ import SearchBar from '@/components/SearchBar';
 import SelectedAliment from '@/components/SelectedAliment';
 import AlimentsList from '@/components/AlimentsList';
 import NutrientsResults from '@/components/NutrientsResults';
+import DailyHistory from '@/components/DailyHistory';
+import EvolutionCharts from '@/components/EvolutionCharts';
 import { Aliment, AlimentInList, MacroNutrients } from './types';
 
 export default function Home() {
@@ -72,6 +74,10 @@ export default function Home() {
     if (confirm('Voulez-vous vraiment vider votre liste ?')) {
       setAlimentsList([]);
     }
+  };
+
+  const handleLoadList = (aliments: AlimentInList[]) => {
+    setAlimentsList(aliments);
   };
 
   const calculateTotals = async () => {
@@ -154,10 +160,18 @@ export default function Home() {
               onRemove={handleRemoveAliment}
               onClear={handleClearList}
             />
+
+            <DailyHistory
+              currentList={alimentsList}
+              onLoadDay={handleLoadList}
+            />
           </aside>
 
           {/* Colonne droite - Résultats */}
           <div className="lg:col-span-8 space-y-6">
+            {/* Graphiques d'évolution */}
+            <EvolutionCharts />
+
             {totals && (
               <NutrientsResults
                 macros={totals.macros}
