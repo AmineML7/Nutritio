@@ -76,7 +76,7 @@ export default function EvolutionCharts({ className = '' }: EvolutionChartsProps
       <div className={`bg-white/80 backdrop-blur-sm border border-emerald-200 rounded-lg p-6 ${className}`}>
         <h2 className="text-sm font-medium text-emerald-900 mb-2">Évolution</h2>
         <p className="text-xs text-gray-500">
-          Ajoutez des aliments pendant plusieurs jours pour voir l'évolution
+          Ajoutez des aliments pendant plusieurs jours pour voir l&apos;évolution
         </p>
       </div>
     );
