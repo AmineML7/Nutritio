@@ -8,9 +8,15 @@ services:
     environment:
       - NODE_ENV=production
       - PORT=3006
+      - DATABASE_URL=file:/app/prisma/dev.db
+      - NEXTAUTH_URL=http://localhost:3006
+      - NEXTAUTH_SECRET=nutritio-secret-key-production-change-me
+      - AUTH_TRUST_HOST=true
     volumes:
       # Persister les données CSV
       - ./public/data:/app/public/data:ro
+      # Persister la base de données
+      - nutritio-db:/app/prisma
     restart: unless-stopped
     container_name: nutritio-app
     healthcheck:
@@ -19,3 +25,6 @@ services:
       timeout: 10s
       retries: 3
       start_period: 40s
+
+volumes:
+  nutritio-db:

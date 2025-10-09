@@ -1,5 +1,9 @@
 # Dependencies
 node_modules
+
+# Database
+prisma/*.db
+prisma/*.db-journal
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*

@@ -15,6 +15,6 @@ Fonctionnalités futures que vous pourriez ajouter :
 
 Grosse amélioration : 
 
-Système de connexion et de compte personnalisé
+Système de connexion et de compte personnalisé / DONE
 
 Reconnaissance visuel photo d'aliments

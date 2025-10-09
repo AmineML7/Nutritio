@@ -20,10 +20,18 @@ export default function EvolutionCharts({ className = '' }: EvolutionChartsProps
   const [showCharts, setShowCharts] = useState(false);
 
   useEffect(() => {
-    const stored = localStorage.getItem('nutritio_daily_history');
-    if (stored) {
-      setHistory(JSON.parse(stored));
-    }
+    const fetchHistory = async () => {
+      try {
+        const response = await fetch('/api/history');
+        if (response.ok) {
+          const data = await response.json();
+          setHistory(data);
+        }
+      } catch (error) {
+        console.error('Erreur chargement historique:', error);
+      }
+    };
+    fetchHistory();
   }, []);
 
   // Préparer les données pour les graphiques

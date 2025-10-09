@@ -1,0 +1,49 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// Modèle Utilisateur
+model User {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  password      String
+  name          String?
+  gender        String    @default("Homme") // Homme ou Femme
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  
+  // Relations
+  foodLists     FoodList[]
+  dailyHistory  DailyHistory[]
+}
+
+// Liste d'aliments sauvegardée
+model FoodList {
+  id          String    @id @default(cuid())
+  name        String
+  aliments    String    // JSON stringifié
+  createdAt   DateTime  @default(now())
+  userId      String
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+// Historique quotidien
+model DailyHistory {
+  id            String    @id @default(cuid())
+  date          String    // YYYY-MM-DD
+  aliments      String    // JSON stringifié
+  totalCalories Float
+  createdAt     DateTime  @default(now())
+  userId        String
+  user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@unique([userId, date])
+}

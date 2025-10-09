@@ -1,6 +1,8 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
+import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
 import Header from '@/components/Header';
 import GenderSelector from '@/components/GenderSelector';
 import SearchBar from '@/components/SearchBar';
@@ -12,6 +14,9 @@ import EvolutionCharts from '@/components/EvolutionCharts';
 import { Aliment, AlimentInList, MacroNutrients } from './types';
 
 export default function Home() {
+  const { data: session, status } = useSession();
+  const router = useRouter();
+  
   const [gender, setGender] = useState<'Homme' | 'Femme'>('Homme');
   const [selectedAliment, setSelectedAliment] = useState<Aliment | null>(null);
   const [alimentsList, setAlimentsList] = useState<AlimentInList[]>([]);
@@ -22,65 +27,8 @@ export default function Home() {
     pourcentages: { [key: string]: number };
   } | null>(null);
 
-  useEffect(() => {
-    if (alimentsList.length > 0) {
-      calculateTotals();
-    } else {
-      setTotals(null);
-    }
-  }, [alimentsList, gender]);
-
-  const handleSelectAliment = (aliment: Aliment) => {
-    setSelectedAliment(aliment);
-  };
-
-  const handleAddAliment = async (quantity: number) => {
-    if (!selectedAliment) return;
-
-    try {
-      const response = await fetch('/api/calculate', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          code: selectedAliment.code,
-          quantity,
-          gender
-        })
-      });
-
-      const results = await response.json();
-
-      const newItem: AlimentInList = {
-        id: Date.now(),
-        aliment: results.aliment,
-        quantity: results.quantity,
-        macros: results.macros,
-        micronutriments: results.micronutriments,
-        nutriments_info: results.nutriments_info
-      };
-
-      setAlimentsList([...alimentsList, newItem]);
-      setSelectedAliment(null);
-    } catch (error) {
-      console.error('Erreur lors de l\'ajout:', error);
-    }
-  };
-
-  const handleRemoveAliment = (id: number) => {
-    setAlimentsList(alimentsList.filter(item => item.id !== id));
-  };
-
-  const handleClearList = () => {
-    if (confirm('Voulez-vous vraiment vider votre liste ?')) {
-      setAlimentsList([]);
-    }
-  };
-
-  const handleLoadList = (aliments: AlimentInList[]) => {
-    setAlimentsList(aliments);
-  };
-
-  const calculateTotals = async () => {
+  // Fonction pour calculer les totaux (avec useCallback pour éviter les re-renders)
+  const calculateTotals = useCallback(async () => {
     const totalMacros: MacroNutrients = {};
     const totalMicros: { [key: string]: number } = {};
     const totalNutrimentsInfo: { [key: string]: number } = {};
@@ -132,6 +80,112 @@ export default function Home() {
     } catch (error) {
       console.error('Erreur lors du calcul des totaux:', error);
     }
+  }, [alimentsList, gender]);
+
+  // Rediriger vers login si non connecté
+  useEffect(() => {
+    if (status === 'unauthenticated') {
+      router.push('/auth/login');
+    }
+  }, [status, router]);
+
+  // Charger automatiquement les aliments du jour actuel depuis l'historique
+  useEffect(() => {
+    const loadTodayFromHistory = async () => {
+      if (!session?.user?.id) return;
+      
+      try {
+        const response = await fetch('/api/history');
+        if (response.ok) {
+          const history = await response.json();
+          const today = new Date().toISOString().split('T')[0];
+          const todayEntry = history.find((entry: any) => entry.date === today);
+          
+          if (todayEntry && todayEntry.aliments.length > 0) {
+            setAlimentsList(todayEntry.aliments);
+          }
+        }
+      } catch (error) {
+        console.error('Erreur chargement journée actuelle:', error);
+      }
+    };
+
+    loadTodayFromHistory();
+  }, [session?.user?.id]);
+
+  // Calculer les totaux quand la liste change
+  useEffect(() => {
+    if (alimentsList.length > 0) {
+      calculateTotals();
+    } else {
+      setTotals(null);
+    }
+  }, [alimentsList, calculateTotals]);
+
+  // Afficher un loader pendant la vérification de la session
+  if (status === 'loading') {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-emerald-50/40 via-white to-emerald-50/60 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-4 border-emerald-600 border-t-transparent mx-auto mb-4"></div>
+          <p className="text-sm text-gray-600">Chargement...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!session) {
+    return null;
+  }
+
+  const handleSelectAliment = (aliment: Aliment) => {
+    setSelectedAliment(aliment);
+  };
+
+  const handleAddAliment = async (quantity: number) => {
+    if (!selectedAliment) return;
+
+    try {
+      const response = await fetch('/api/calculate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          code: selectedAliment.code,
+          quantity,
+          gender
+        })
+      });
+
+      const results = await response.json();
+
+      const newItem: AlimentInList = {
+        id: Date.now(),
+        aliment: results.aliment,
+        quantity: results.quantity,
+        macros: results.macros,
+        micronutriments: results.micronutriments,
+        nutriments_info: results.nutriments_info
+      };
+
+      setAlimentsList([...alimentsList, newItem]);
+      setSelectedAliment(null);
+    } catch (error) {
+      console.error('Erreur lors de l\'ajout:', error);
+    }
+  };
+
+  const handleRemoveAliment = (id: number) => {
+    setAlimentsList(alimentsList.filter(item => item.id !== id));
+  };
+
+  const handleClearList = () => {
+    if (confirm('Voulez-vous vraiment vider votre liste ?')) {
+      setAlimentsList([]);
+    }
+  };
+
+  const handleLoadList = (aliments: AlimentInList[]) => {
+    setAlimentsList(aliments);
   };
 
   return (

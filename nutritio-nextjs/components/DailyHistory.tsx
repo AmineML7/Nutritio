@@ -20,49 +20,83 @@ export default function DailyHistory({ currentList, onLoadDay }: DailyHistoryPro
   const [history, setHistory] = useState<DailyEntry[]>([]);
   const [showHistory, setShowHistory] = useState(false);
 
-  // Charger l'historique depuis localStorage
+  // Charger l'historique depuis la base de données
   useEffect(() => {
-    const stored = localStorage.getItem('nutritio_daily_history');
-    if (stored) {
-      setHistory(JSON.parse(stored));
-    }
+    const fetchHistory = async () => {
+      try {
+        const response = await fetch('/api/history');
+        if (response.ok) {
+          const data = await response.json();
+          // Transformer les données pour correspondre au format DailyEntry
+          const formatted = data.map((entry: any) => ({
+            id: entry.date,
+            date: entry.date,
+            dateDisplay: new Date(entry.date).toLocaleDateString('fr-FR', {
+              weekday: 'long',
+              year: 'numeric',
+              month: 'long',
+              day: 'numeric'
+            }),
+            aliments: entry.aliments,
+            totalCalories: Math.round(entry.totalCalories)
+          }));
+          setHistory(formatted);
+        }
+      } catch (error) {
+        console.error('Erreur chargement historique:', error);
+      }
+    };
+    fetchHistory();
   }, []);
 
   // Sauvegarder automatiquement la liste actuelle chaque fois qu'elle change
   useEffect(() => {
-    if (currentList.length === 0) return;
+    const saveHistory = async () => {
+      if (currentList.length === 0) return;
 
-    const today = new Date();
-    const dateKey = today.toISOString().split('T')[0]; // YYYY-MM-DD
-    const dateDisplay = today.toLocaleDateString('fr-FR', { 
-      weekday: 'long', 
-      year: 'numeric', 
-      month: 'long', 
-      day: 'numeric' 
-    });
+      const today = new Date();
+      const dateKey = today.toISOString().split('T')[0];
+      const totalCalories = currentList.reduce((sum, item) => 
+        sum + (item.macros.energie_kcal || 0), 0
+      );
 
-    // Calculer les calories totales
-    const totalCalories = currentList.reduce((sum, item) => 
-      sum + (item.macros.energie_kcal || 0), 0
-    );
+      try {
+        const response = await fetch('/api/history', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            date: dateKey,
+            aliments: currentList,
+            totalCalories
+          })
+        });
 
-    const newEntry: DailyEntry = {
-      id: dateKey,
-      date: dateKey,
-      dateDisplay,
-      aliments: currentList,
-      totalCalories: Math.round(totalCalories),
+        if (response.ok) {
+          // Rafraîchir l'historique
+          const historyResponse = await fetch('/api/history');
+          if (historyResponse.ok) {
+            const data = await historyResponse.json();
+            const formatted = data.map((entry: any) => ({
+              id: entry.date,
+              date: entry.date,
+              dateDisplay: new Date(entry.date).toLocaleDateString('fr-FR', {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+              }),
+              aliments: entry.aliments,
+              totalCalories: Math.round(entry.totalCalories)
+            }));
+            setHistory(formatted);
+          }
+        }
+      } catch (error) {
+        console.error('Erreur sauvegarde historique:', error);
+      }
     };
 
-    // Mettre à jour ou ajouter l'entrée du jour
-    const updated = history.filter(entry => entry.date !== dateKey);
-    updated.unshift(newEntry); // Ajouter en premier
-
-    // Garder seulement les 30 derniers jours
-    const trimmed = updated.slice(0, 30);
-    
-    setHistory(trimmed);
-    localStorage.setItem('nutritio_daily_history', JSON.stringify(trimmed));
+    saveHistory();
   }, [currentList]);
 
   const loadDay = (entry: DailyEntry) => {
@@ -70,18 +104,30 @@ export default function DailyHistory({ currentList, onLoadDay }: DailyHistoryPro
     setShowHistory(false);
   };
 
-  const deleteDay = (dateKey: string) => {
+  const deleteDay = async (dateKey: string) => {
     if (confirm('Voulez-vous vraiment supprimer cette journée ?')) {
-      const updated = history.filter(entry => entry.date !== dateKey);
-      setHistory(updated);
-      localStorage.setItem('nutritio_daily_history', JSON.stringify(updated));
+      try {
+        await fetch(`/api/history?date=${dateKey}`, { method: 'DELETE' });
+        setHistory(prev => prev.filter(entry => entry.date !== dateKey));
+      } catch (error) {
+        console.error('Erreur suppression entrée:', error);
+      }
     }
   };
 
-  const clearHistory = () => {
+  const clearHistory = async () => {
     if (confirm('Voulez-vous vraiment supprimer tout l\'historique ?')) {
-      setHistory([]);
-      localStorage.removeItem('nutritio_daily_history');
+      try {
+        // Supprimer toutes les entrées
+        await Promise.all(
+          history.map(entry => 
+            fetch(`/api/history?date=${entry.date}`, { method: 'DELETE' })
+          )
+        );
+        setHistory([]);
+      } catch (error) {
+        console.error('Erreur suppression historique:', error);
+      }
     }
   };
 

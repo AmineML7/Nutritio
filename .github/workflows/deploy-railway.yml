@@ -1,0 +1,30 @@
+name: Deploy to Railway
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'nutritio-nextjs/**'
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install Railway CLI
+        run: npm install -g @railway/cli
+
+      - name: Deploy to Railway
+        run: railway up --service nutritio-app
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+        working-directory: ./nutritio-nextjs
+
+      - name: Deployment Status
+        run: echo "✅ Déploiement réussi sur Railway!"
+
